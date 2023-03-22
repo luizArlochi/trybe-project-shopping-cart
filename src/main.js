@@ -19,6 +19,15 @@ const displayLoadingMessage = () => {
   return removeMessage;
 };
 
+const displayErrorMessage = (message) => {
+  productsSection.innerHTML = '';
+  const errorMsg = document.createElement('p');
+  errorMsg.innerHTML = message;
+  errorMsg.classList.add('error');
+  productsSection.appendChild(errorMsg);
+  return errorMsg;
+};
+
 const productsList = async (element) => {
   const removeLoadingMessage = displayLoadingMessage();
   try {
@@ -28,7 +37,7 @@ const productsList = async (element) => {
       productsSection.appendChild(productElement);
     });
   } catch (error) {
-    console.log(error.message);
+    displayErrorMessage('Algum erro ocorreu, recarregue a página e tente novamente');
   } finally {
     removeLoadingMessage();
   }
