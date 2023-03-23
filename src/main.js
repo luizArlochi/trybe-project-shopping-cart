@@ -1,10 +1,12 @@
+import { saveCartID } from './helpers/cartFunctions';
 import { searchCep } from './helpers/cepFunctions';
-import { fetchProductsList } from './helpers/fetchFunctions';
-import { createProductElement } from './helpers/shopFunctions';
+import { fetchProduct, fetchProductsList } from './helpers/fetchFunctions';
+import { createCartProductElement, createProductElement } from './helpers/shopFunctions';
 import './style.css';
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
 const productsSection = document.querySelector('.products');
+const cartList = document.querySelector('.cart__products');
 
 const displayLoadingMessage = () => {
   productsSection.innerHTML = '';
@@ -34,6 +36,22 @@ const productsList = async (element) => {
     const products = await fetchProductsList(element);
     products.forEach((product) => {
       const productElement = createProductElement(product);
+      productsSection.appendChild(productElement);
+
+      // o objetivo inicial era separar essa parte em uma outra função, porém comecei a perder muito tempo nisso, no fim fiz na mesma função
+      productElement.querySelector('.product__add').addEventListener(
+        'click',
+        async () => {
+          try {
+            const productDetails = await fetchProduct(product.id);
+            const cartProductElement = createCartProductElement(productDetails);
+            cartList.appendChild(cartProductElement);
+            saveCartID(product.id);
+          } catch (error) {
+            console.log(error);
+          }
+        },
+      );
       productsSection.appendChild(productElement);
     });
   } catch (error) {
