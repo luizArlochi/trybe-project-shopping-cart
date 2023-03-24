@@ -1,4 +1,4 @@
-import { saveCartID } from './helpers/cartFunctions';
+import { getSavedCartIDs, saveCartID } from './helpers/cartFunctions';
 import { searchCep } from './helpers/cepFunctions';
 import { fetchProduct, fetchProductsList } from './helpers/fetchFunctions';
 import { createCartProductElement, createProductElement } from './helpers/shopFunctions';
@@ -30,6 +30,16 @@ const displayErrorMessage = (message) => {
   return errorMsg;
 };
 
+const loadCart = async () => {
+  const cartIds = getSavedCartIDs();
+
+  const cartProducts = await Promise.all(cartIds.map((id) => fetchProduct(id)));
+  cartProducts.forEach((element) => {
+    const cartProductElement = createCartProductElement(element);
+    cartList.appendChild(cartProductElement);
+  });
+};
+
 const productsList = async (element) => {
   const removeLoadingMessage = displayLoadingMessage();
   try {
@@ -58,6 +68,7 @@ const productsList = async (element) => {
     displayErrorMessage('Algum erro ocorreu, recarregue a página e tente novamente');
   } finally {
     removeLoadingMessage();
+    await loadCart();
   }
 };
 // descobri o finally e estou feliz por ele existir, se o conhecesse antes pouparia uns 30min.
