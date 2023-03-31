@@ -10,6 +10,19 @@ import { removeCartID } from './cartFunctions';
  * @param {string} imageSource - URL da imagem.
  * @returns {Element} Elemento de imagem do produto.
  */
+
+export const updateTotalPrice = () => {
+  let sumPrice = 0;
+  const priceList = document.querySelectorAll('section.cart span.product__price__value');
+  priceList.forEach((item) => {
+    sumPrice += parseFloat(item.outerText);
+  });
+
+  const totalPrice = document.querySelector('.total-price');
+
+  totalPrice.innerHTML = sumPrice.toFixed(2);
+};
+
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
   img.className = 'product__image';
@@ -48,6 +61,7 @@ export const getIdFromProduct = (product) => (
 const removeCartProduct = (li, id) => {
   li.remove();
   removeCartID(id);
+  updateTotalPrice();
 };
 
 /**

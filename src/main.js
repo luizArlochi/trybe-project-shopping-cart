@@ -1,7 +1,8 @@
 import { getSavedCartIDs, saveCartID } from './helpers/cartFunctions';
 import { searchCep } from './helpers/cepFunctions';
 import { fetchProduct, fetchProductsList } from './helpers/fetchFunctions';
-import { createCartProductElement, createProductElement } from './helpers/shopFunctions';
+import { createCartProductElement, createProductElement,
+  updateTotalPrice } from './helpers/shopFunctions';
 import './style.css';
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
@@ -38,6 +39,7 @@ const loadCart = async () => {
     const cartProductElement = createCartProductElement(element);
     cartList.appendChild(cartProductElement);
   });
+  updateTotalPrice();
 };
 
 const productsList = async (element) => {
@@ -56,6 +58,7 @@ const productsList = async (element) => {
             const productDetails = await fetchProduct(product.id);
             const cartProductElement = createCartProductElement(productDetails);
             cartList.appendChild(cartProductElement);
+            updateTotalPrice(productDetails.price, 'add');
             saveCartID(product.id);
           } catch (error) {
             console.log(error);
